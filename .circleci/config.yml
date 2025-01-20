@@ -18,6 +18,20 @@ jobs:
           command: docker build -t my-node-app .
 
       - run:
+          name: Run Docker container
+          command: docker run -d -p 8080:8080 --name my-node-app-container my-node-app
+
+      - run:
+          name: Wait for container to be ready
+          command: |
+            sleep 10
+
+      - run:
+          name: Test Docker container
+          command: |
+            curl --fail http://127.0.0.1:8080 || (echo "Container did not respond as expected" && exit 1)
+
+      - run:
           name: Push Docker image
           command: |
              docker login -u $DOCKER_USER -p $DOCKER_PASS
